@@ -1,0 +1,8 @@
+output
+target
+dataset
+wandb
+weight
+.python-version
+__pycache__
+data.yaml
