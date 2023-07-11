@@ -36,8 +36,13 @@ class ImageLoader(QWidget):
         self.layout.addWidget(self.label)
 
         # Adding an input textbox
+        self.textbox3 = QLineEdit(self)
+        self.textbox3.setPlaceholderText("additional Ingredients delimited by space")  # Placeholder text
+        self.layout.addWidget(self.textbox3)
+
+        # Adding an input textbox
         self.textbox2 = QLineEdit(self)
-        self.textbox2.setPlaceholderText("negative prompt")  # Placeholder text
+        self.textbox2.setPlaceholderText("negative prompt delimited by space")  # Placeholder text
         self.layout.addWidget(self.textbox2)
 
         # Output textbox
@@ -61,10 +66,11 @@ class ImageLoader(QWidget):
         if os.path.exists("./target/temp.png"):
             labels = predict("./target/temp.png")
             print(labels)
+        add_ingred_prompt = self.textbox3.text()
         negative_prompt = self.textbox2.text()
         if len(labels) != 0:
             text = "\n".join(
-                ask_recipe(labels, list(negative_prompt.split(" ")))
+                ask_recipe(labels, list(add_ingred_prompt.split(" ")), list(negative_prompt.split(" ")))
             )  # ["beef", "pork", "chicken"]
         else:
             text = "Let's go to super market!"
@@ -73,23 +79,26 @@ class ImageLoader(QWidget):
 
 from chatgpt import chat
 
-prompt = "I require someone who can suggest delicious recipes that includes foods which are nutritionally beneficial but also easy & not time consuming enough therefore suitable for busy people like us among other factors such as cost effectiveness so overall dish ends up being healthy yet economical at same time! My first request – \
-    “Under the condition that a sweet potato is considered a potato describe a simple dish like curry using the following ingredients and how to prepare it. \n \
-    !ingredients! \n However, please do not use the following ingredients and cookware. \n !negative!"
+# prompt = "I require someone who can suggest delicious recipes that includes foods which are nutritionally beneficial but also easy & not time consuming enough therefore suitable for busy people like us among other factors such as cost effectiveness so overall dish ends up being healthy yet economical at same time! My first request – \
+#     “describe a simple dish like curry using the following ingredients and how to prepare it. \n \
+#     !ingredients! !add_ingredients!\n However, please do not use the following ingredients and cookware. \n !negative!"
+prompt = "Describe a simple dish like curry using the following ingredients and how to prepare it. Please indicate how many servings the ingredients make.\
+    \n !add_ingredients! !ingredients! \n However, please do not use the following ingredients and cookware. \n !negative!"
 counter = 0
 
 
-def ask_recipe(ingredients_list: list, negative_list: list):
+def ask_recipe(ingredients_list: list, add_list: list, negative_list: list):
     # chatgptで生成した文を生成
     ingredients = ""
     for ingredient in ingredients_list:
         ingredients += ingredient + "\n"
+    add_ingredients = ""
+    for add_ingredient in add_list:
+        add_ingredients += add_ingredient + "\n"
     negatives = ""
     for negative in negative_list:
         negatives += negative + "\n"
-    new_prompt = prompt.replace("!ingredients!", ingredients).replace(
-        "!negative!", negatives
-    )
+    new_prompt = prompt.replace("!ingredients!", ingredients).replace("!add_ingredients!", add_ingredients).replace("!negative!", negatives)
     generated_sentences = list(
         chat(new_prompt)["choices"][0]["message"]["content"].split("\n")
     )
