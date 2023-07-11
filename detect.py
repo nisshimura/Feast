@@ -4,11 +4,19 @@ import os
 import shutil
 import datetime
 def predict(img_path):
-    model = YOLO('./weight/best.pt')  # pretrained YOLOv8n model
+    from roboflow import Roboflow
+    rf = Roboflow(api_key="SvoHMJJPTP96xfhtZcMk")
+    project = rf.workspace().project("aicook-lcv4d")
+    model = project.version(2).model
+    # model = YOLO('./weight/best.pt')  # pretrained YOLOv8n model
 
     out_dir = "."
     out_name = "predict"
-    model.predict(img_path,project=out_dir,name=out_name,save=True, conf=0.5,save_txt=True)
+    # model.predict(img_path,project=out_dir,name=out_name,save=True, conf=0.5,save_txt=True)
+    detection_result = model.predict(img_path, confidence=40, overlap=30)
+
+    # Extract the 'class' from each prediction
+    detected_classes = [prediction['class'] for prediction in detection_result['predictions']]
 
     filename_with_ext = os.path.basename(img_path)
     filename, _ = os.path.splitext(filename_with_ext)

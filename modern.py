@@ -64,7 +64,9 @@ class ImageLoader(QWidget):
         self.textbox1.setPlainText(text)
 from chatgpt import chat
 
-prompt = " Sweet potatoes should be considered potatoes. Describe a simple dish like curry using the following ingredients and how to prepare it.\n !ingredients! \n However, please do not use the following ingredients. \n !negative!"
+prompt = "I require someone who can suggest delicious recipes that includes foods which are nutritionally beneficial but also easy & not time consuming enough therefore suitable for busy people like us among other factors such as cost effectiveness so overall dish ends up being healthy yet economical at same time! My first request – \
+    “Under the condition that a sweet potato is considered a potato describe a simple dish like curry using the following ingredients and how to prepare it. \n \
+    !ingredients! \n However, please do not use the following ingredients and cookware. \n !negative!"
 counter = 0
 def ask_recipe(ingredients_list: list, negative_list: list):
     # chatgptで生成した文を生成
