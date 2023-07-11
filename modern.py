@@ -1,11 +1,16 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QPlainTextEdit, QLineEdit, QFileDialog
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtCore import Qt
-import sys
-from PIL import Image
-from numpy import negative
-from detect import predict
 import os
+import sys
+
+from numpy import negative
+from PIL import Image
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import (QApplication, QFileDialog, QHBoxLayout, QLabel,
+                             QLineEdit, QPlainTextEdit, QPushButton,
+                             QVBoxLayout, QWidget)
+
+from detect import predict
+
 
 class ImageLoader(QWidget):
     def __init__(self):
@@ -14,16 +19,16 @@ class ImageLoader(QWidget):
         self.initUI()
 
     def initUI(self):
-        self.setWindowTitle('Image Loader')
+        self.setWindowTitle("Image Loader")
 
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
 
-        self.button = QPushButton('input image', self)
+        self.button = QPushButton("input image", self)
         self.button.clicked.connect(self.load_image)
         self.layout.addWidget(self.button)
 
-        self.button_generate = QPushButton('generate', self)
+        self.button_generate = QPushButton("generate", self)
         self.button_generate.clicked.connect(self.generate)
         self.layout.addWidget(self.button_generate)
 
@@ -41,7 +46,7 @@ class ImageLoader(QWidget):
         self.layout.addWidget(self.textbox1)
 
     def load_image(self):
-        fname = QFileDialog.getOpenFileName(self, 'Open file', './')
+        fname = QFileDialog.getOpenFileName(self, "Open file", "./")
 
         if fname[0]:
             image = Image.open(fname[0])
@@ -57,17 +62,23 @@ class ImageLoader(QWidget):
             labels = predict("./target/temp.png")
             print(labels)
         negative_prompt = self.textbox2.text()
-        if len(labels)!=0:
-            text = "\n".join(ask_recipe(labels,list(negative_prompt.split(" "))))#["beef", "pork", "chicken"]
+        if len(labels) != 0:
+            text = "\n".join(
+                ask_recipe(labels, list(negative_prompt.split(" ")))
+            )  # ["beef", "pork", "chicken"]
         else:
             text = "Let's go to super market!"
         self.textbox1.setPlainText(text)
+
+
 from chatgpt import chat
 
 prompt = "I require someone who can suggest delicious recipes that includes foods which are nutritionally beneficial but also easy & not time consuming enough therefore suitable for busy people like us among other factors such as cost effectiveness so overall dish ends up being healthy yet economical at same time! My first request – \
     “Under the condition that a sweet potato is considered a potato describe a simple dish like curry using the following ingredients and how to prepare it. \n \
     !ingredients! \n However, please do not use the following ingredients and cookware. \n !negative!"
 counter = 0
+
+
 def ask_recipe(ingredients_list: list, negative_list: list):
     # chatgptで生成した文を生成
     ingredients = ""
@@ -76,12 +87,16 @@ def ask_recipe(ingredients_list: list, negative_list: list):
     negatives = ""
     for negative in negative_list:
         negatives += negative + "\n"
-    new_prompt = prompt.replace("!ingredients!", ingredients).replace("!negative!", negatives)
-    generated_sentences = list(chat(new_prompt)['choices'][0]['message']['content'].split("\n"))
+    new_prompt = prompt.replace("!ingredients!", ingredients).replace(
+        "!negative!", negatives
+    )
+    generated_sentences = list(
+        chat(new_prompt)["choices"][0]["message"]["content"].split("\n")
+    )
     return generated_sentences
 
-if __name__ == '__main__':
 
+if __name__ == "__main__":
     app = QApplication(sys.argv)
     ex = ImageLoader()
     ex.show()
