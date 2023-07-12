@@ -82,7 +82,7 @@ from chatgpt import chat
 # prompt = "I require someone who can suggest delicious recipes that includes foods which are nutritionally beneficial but also easy & not time consuming enough therefore suitable for busy people like us among other factors such as cost effectiveness so overall dish ends up being healthy yet economical at same time! My first request – \
 #     “describe a simple dish like curry using the following ingredients and how to prepare it. \n \
 #     !ingredients! !add_ingredients!\n However, please do not use the following ingredients and cookware. \n !negative!"
-prompt = "Describe a simple dish like curry using the following ingredients and how to prepare it. Please indicate how many servings the ingredients make.\
+prompt = "Describe with total calory a simple dish using the following ingredients and how to prepare it. Please indicate how many servings the ingredients make.\
     \n !add_ingredients! !ingredients! \n However, please do not use the following ingredients and cookware. \n !negative!"
 counter = 0
 
